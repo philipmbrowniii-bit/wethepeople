@@ -18,31 +18,48 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-4 py-10">
-        <article>
-          <p className="text-sm font-bold uppercase tracking-wide text-muted">{article.op_ed_label}</p>
-          <h1 className="mt-3 font-serif text-5xl font-bold leading-tight">{article.title}</h1>
-          {article.subtitle ? <p className="mt-4 font-serif text-2xl text-muted">{article.subtitle}</p> : null}
-          <div className="mt-5 border-y border-rule py-3 text-sm text-muted">
-            By {article.profiles?.display_name ?? "Editorial Staff"} · {formatDate(article.published_at)} ·{" "}
-            {article.categories?.name} · {article.reading_time} min read
-          </div>
-          <div className="mt-8">
-            <MarkdownBody body={article.body} />
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:py-14">
+        <article className="mx-auto max-w-4xl">
+          <header className="border-b-2 border-ink pb-7">
+            <div className="flex flex-wrap gap-3 text-xs font-bold uppercase">
+              <span className="text-gold-dark">{article.op_ed_label}</span>
+              <span className="text-muted">{article.categories?.name}</span>
+            </div>
+            <h1 className="mt-4 font-serif text-5xl font-bold leading-[1.04] sm:text-7xl">{article.title}</h1>
+            {article.subtitle ? <p className="mt-5 font-serif text-2xl leading-9 text-muted sm:text-3xl">{article.subtitle}</p> : null}
+          </header>
+
+          <div className="grid gap-8 py-7 md:grid-cols-[180px_minmax(0,1fr)]">
+            <aside className="text-sm text-muted">
+              <p className="font-bold text-ink">By {article.profiles?.display_name ?? "The Ledger Staff"}</p>
+              <p className="mt-2">{formatDate(article.published_at)}</p>
+              <p className="mt-1">{article.reading_time} min read</p>
+            </aside>
+            <div>
+              <MarkdownBody body={article.body} />
+            </div>
           </div>
         </article>
 
-        <section className="mt-10 border-y border-rule py-6">
-          <h2 className="font-serif text-2xl font-bold">About the author</h2>
-          <p className="mt-2 text-muted">{article.profiles?.bio ?? "Author bio coming soon."}</p>
+        <section className="mx-auto mt-8 grid max-w-4xl gap-4 border-y border-rule py-6 sm:grid-cols-[180px_1fr]">
+          <h2 className="text-xs font-bold uppercase text-gold-dark">About the author</h2>
+          <div>
+            <p className="font-serif text-2xl font-bold">{article.profiles?.display_name ?? "The Ledger Staff"}</p>
+            <p className="mt-2 leading-7 text-muted">{article.profiles?.bio ?? "Author bio coming soon."}</p>
+          </div>
         </section>
 
-        <section className="mt-10 space-y-6">
-          <h2 className="font-serif text-3xl font-bold">Comments</h2>
-          <div className="space-y-4">
+        <section className="mx-auto mt-12 max-w-4xl">
+          <div className="border-b-2 border-ink pb-2">
+            <h2 className="font-serif text-3xl font-bold">Reader Discussion</h2>
+          </div>
+          <p className="mt-4 text-sm leading-6 text-muted">
+            Comments are moderated for relevance, civility, and good-faith participation before publication.
+          </p>
+          <div className="mt-6 space-y-5">
             {comments.length ? (
               comments.map((comment) => (
-                <div key={comment.id} className="border-t border-rule pt-4">
+                <div key={comment.id} className="border-t border-rule pt-5">
                   <p className="font-bold">{comment.name}</p>
                   <p className="mt-2 leading-7 text-muted">{comment.message}</p>
                 </div>
@@ -51,7 +68,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <p className="text-muted">No approved comments yet.</p>
             )}
           </div>
-          <CommentForm articleId={article.id} />
+          <div className="mt-8">
+            <CommentForm articleId={article.id} />
+          </div>
         </section>
       </main>
       <Footer />

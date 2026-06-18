@@ -5,13 +5,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "We The People",
-    template: "%s | We The People"
+    default: "The People's Ledger",
+    template: "%s | The People's Ledger"
   },
-  description: "Transparent opinion for civic reform.",
+  description: "Independent civic journalism and opinion. News for Citizens, Not Consumers.",
   openGraph: {
-    title: "We The People",
-    description: "Transparent opinion for civic reform.",
+    title: "The People's Ledger",
+    description: "Independent civic journalism and opinion. News for Citizens, Not Consumers.",
     type: "website"
   }
 };

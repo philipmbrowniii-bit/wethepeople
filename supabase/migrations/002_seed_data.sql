@@ -6,8 +6,8 @@ on conflict (id) do nothing;
 
 insert into public.profiles (id, email, display_name, bio, role)
 values
-  ('11111111-1111-1111-1111-111111111111', 'admin@wethepeople.local', 'Eleanor Hayes', 'Eleanor edits We The People and writes about institutional trust, public accountability, and reform mechanics.', 'admin'),
-  ('22222222-2222-2222-2222-222222222222', 'writer@wethepeople.local', 'Marcus Reed', 'Marcus covers local governance, civic culture, and the everyday systems that shape public life.', 'writer')
+  ('11111111-1111-1111-1111-111111111111', 'admin@wethepeople.local', 'Philip Brown', 'Philip Brown is the founder of The People''s Ledger, an independent publication dedicated to transparency, civic engagement, and public accountability. His work focuses on policy, governance, institutional effectiveness, and the issues shaping American communities.', 'admin'),
+  ('22222222-2222-2222-2222-222222222222', 'writer@wethepeople.local', 'The Ledger Staff', 'The Ledger Staff contributes reporting, research, and analysis on public institutions, civic life, and community accountability.', 'writer')
 on conflict (id) do update set display_name = excluded.display_name, bio = excluded.bio, role = excluded.role;
 
 insert into public.categories (id, name, slug, description)

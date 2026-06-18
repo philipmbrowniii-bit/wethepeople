@@ -6,10 +6,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        paper: "#f8f5ed",
-        ink: "#151515",
-        muted: "#66615a",
-        rule: "#d7d0c2"
+        paper: "#f7f4ec",
+        ink: "#181816",
+        muted: "#666159",
+        rule: "#cbc4b6",
+        gold: "#8a6a24",
+        "gold-dark": "#684e16"
       },
       fontFamily: {
         serif: ["Georgia", "Cambria", "Times New Roman", "serif"],

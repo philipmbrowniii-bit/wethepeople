@@ -7,11 +7,23 @@
 }
 
 body {
-  background: #f8f5ed;
-  color: #151515;
+  background: #f7f4ec;
+  color: #181816;
+  letter-spacing: 0;
 }
 
 ::selection {
-  background: #151515;
-  color: #f8f5ed;
+  background: #8a6a24;
+  color: #fffdf7;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  border-radius: 0;
 }

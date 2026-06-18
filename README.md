@@ -1,8 +1,8 @@
-# We The People
+# The People's Ledger
 
-Transparent opinion for civic reform.
+News for Citizens, Not Consumers.
 
-We The People is a production-ready MVP for a neutral civic reform op-ed platform. It uses the Next.js App Router, TypeScript, Tailwind CSS, and Supabase for database, auth, and storage-ready infrastructure.
+The People's Ledger is an independent civic journalism and opinion publication focused on transparency, accountability, public discourse, and civic reform. It uses the Next.js App Router, TypeScript, Tailwind CSS, and Supabase.
 
 ## Features
 
@@ -73,14 +73,14 @@ npm run typecheck
 3. Add the environment variables above in Vercel Project Settings.
 4. Deploy.
 
-The initial deployment can use a Vercel URL such as `wethepeople.vercel.app`.
+The initial deployment can use a Vercel project URL and later move to a custom publication domain.
 
 ## Custom domain
 
-When ready, add `wethepeople.com` in Vercel Project Settings > Domains. Update DNS at the registrar using Vercel's provided records, then set:
+When ready, add the publication domain in Vercel Project Settings > Domains. Update DNS at the registrar using Vercel's provided records, then set:
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://wethepeople.com
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
 Redeploy after changing the site URL.

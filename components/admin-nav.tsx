@@ -6,7 +6,7 @@ export function AdminNav() {
     <div className="border-b border-rule bg-white">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
         <Link href="/admin" className="font-serif text-2xl font-bold">
-          We The People Admin
+          The People&apos;s Ledger Admin
         </Link>
         <nav className="flex flex-wrap items-center gap-3 text-sm uppercase tracking-wide">
           <Link href="/admin/articles/new" className="hover:underline">
