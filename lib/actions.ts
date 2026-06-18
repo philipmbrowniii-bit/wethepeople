@@ -129,7 +129,7 @@ export async function saveArticle(_: ArticleFormState, formData: FormData): Prom
 
   revalidatePath("/");
   revalidatePath("/admin");
-  redirect("/admin");
+  redirect("/admin?saved=article");
 }
 
 export async function deleteArticle(formData: FormData) {
@@ -204,6 +204,7 @@ export async function saveProfile(formData: FormData) {
   revalidatePath("/admin/authors");
   revalidatePath("/authors");
   revalidatePath("/");
+  redirect("/admin/authors?saved=1");
 }
 
 export async function saveBranding(formData: FormData) {
@@ -226,6 +227,7 @@ export async function saveBranding(formData: FormData) {
     })
     .eq("id", "main");
   revalidatePath("/", "layout");
+  redirect("/admin/branding?saved=1");
 }
 
 export async function saveHomepage(formData: FormData) {
@@ -249,6 +251,7 @@ export async function saveHomepage(formData: FormData) {
     })
     .eq("id", "main");
   revalidatePath("/");
+  redirect("/admin/homepage?saved=1");
 }
 
 export async function saveAboutContent(formData: FormData) {
@@ -265,4 +268,5 @@ export async function saveAboutContent(formData: FormData) {
     .eq("id", "main");
   revalidatePath("/about");
   revalidatePath("/editorial-standards");
+  redirect("/admin/about?saved=1");
 }

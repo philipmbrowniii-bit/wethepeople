@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/auth";
 import { saveCategory } from "@/lib/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { AdminPageHeader } from "@/components/admin-page-header";
 import type { Category } from "@/lib/types";
 
 export default async function AdminCategoriesPage() {
@@ -10,7 +11,11 @@ export default async function AdminCategoriesPage() {
 
   return (
     <section>
-      <h1 className="font-serif text-4xl font-bold">Categories</h1>
+      <AdminPageHeader
+        eyebrow="Article organization"
+        title="Categories"
+        description="Create and edit the sections used to organize stories across the publication."
+      />
       <form action={saveCategory} className="mt-6 grid gap-4 border border-rule bg-white p-4 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
         <div>
           <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="name">

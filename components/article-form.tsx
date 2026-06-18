@@ -14,7 +14,7 @@ type Props = {
 function SaveButton() {
   const { pending } = useFormStatus();
   return (
-    <button disabled={pending} className="border border-ink px-4 py-2 text-sm uppercase tracking-wide disabled:opacity-50">
+    <button disabled={pending} className="border border-ink bg-ink px-5 py-2 text-sm font-bold uppercase text-white disabled:opacity-50">
       {pending ? "Saving..." : "Save article"}
     </button>
   );
@@ -40,6 +40,13 @@ export function ArticleForm({ article, categories, authors, currentAuthorId }: P
           <input id="slug" name="slug" defaultValue={article?.slug} className="mt-2 w-full border border-rule px-3 py-2" />
         </div>
       </div>
+      {article?.featured_image_url ? (
+        <div>
+          <p className="text-xs font-bold uppercase">Current featured image</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={article.featured_image_url} alt="" className="mt-2 max-h-64 w-auto border border-rule object-cover" />
+        </div>
+      ) : null}
       <div>
         <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="subtitle">
           Subtitle
@@ -162,7 +169,10 @@ export function ArticleForm({ article, categories, authors, currentAuthorId }: P
         </label>
         <textarea id="body" name="body" required rows={18} defaultValue={article?.body} className="mt-2 w-full border border-rule px-3 py-2 font-mono text-sm" />
       </div>
-      <SaveButton />
+      <div className="sticky bottom-0 flex items-center gap-4 border-t border-rule bg-paper py-4">
+        <SaveButton />
+        <span className="text-sm text-muted">Saved changes appear on the live site immediately.</span>
+      </div>
       {state.message ? <p className="text-sm text-red-800">{state.message}</p> : null}
     </form>
   );

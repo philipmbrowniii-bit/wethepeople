@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/auth";
 import { updateCommentStatus } from "@/lib/actions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDate } from "@/lib/format";
+import { AdminPageHeader } from "@/components/admin-page-header";
 import type { Comment } from "@/lib/types";
 
 type CommentRow = Comment & {
@@ -19,7 +20,11 @@ export default async function CommentsPage() {
 
   return (
     <section>
-      <h1 className="font-serif text-4xl font-bold">Comments</h1>
+      <AdminPageHeader
+        eyebrow="Community"
+        title="Comment Moderation"
+        description="Review reader comments before they appear publicly. Approve, reject, return to pending, or permanently remove each submission."
+      />
       <div className="mt-6 divide-y divide-rule border-y border-rule">
         {(comments ?? []).map((comment) => (
           <div key={comment.id} className="py-5">
@@ -33,12 +38,17 @@ export default async function CommentsPage() {
                 <form key={status} action={updateCommentStatus}>
                   <input type="hidden" name="id" value={comment.id} />
                   <input type="hidden" name="status" value={status} />
-                  <button className="border border-ink px-3 py-2 text-sm uppercase tracking-wide">{status}</button>
+                  <button className={`border px-3 py-2 text-sm font-bold uppercase ${
+                    status === "approved" ? "border-green-800 text-green-800" :
+                    status === "delete" ? "border-red-900 text-red-900" :
+                    "border-ink"
+                  }`}>{status === "delete" ? "Remove" : status}</button>
                 </form>
               ))}
             </div>
           </div>
         ))}
+        {!comments?.length ? <p className="py-8 text-muted">There are no comments to review.</p> : null}
       </div>
     </section>
   );

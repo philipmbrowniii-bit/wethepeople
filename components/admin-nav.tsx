@@ -3,12 +3,26 @@ import { signOut } from "@/lib/actions";
 
 export function AdminNav({ role }: { role: "admin" | "writer" }) {
   return (
-    <div className="border-b border-rule bg-white">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-        <Link href="/admin" className="font-serif text-2xl font-bold">
-          The People&apos;s Ledger Admin
-        </Link>
-        <nav className="flex flex-wrap items-center gap-3 text-sm uppercase tracking-wide">
+    <div className="border-b border-ink bg-white">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rule py-4">
+          <div>
+            <Link href="/admin" className="font-serif text-2xl font-bold">
+              The People&apos;s Ledger
+            </Link>
+            <p className="text-xs uppercase text-muted">{role === "admin" ? "Administrator" : "Writer"} dashboard</p>
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <Link href="/" target="_blank" className="border border-rule px-3 py-2 font-bold text-gold-dark hover:border-gold">
+              View live site
+            </Link>
+            <form action={signOut}>
+              <button className="border border-ink px-3 py-2">Sign out</button>
+            </form>
+          </div>
+        </div>
+        <nav className="flex gap-5 overflow-x-auto py-3 text-xs font-bold uppercase">
+          <Link href="/admin" className="shrink-0 hover:text-gold-dark">Articles</Link>
           <Link href="/admin/articles/new" className="hover:underline">
             New Article
           </Link>
@@ -22,9 +36,6 @@ export function AdminNav({ role }: { role: "admin" | "writer" }) {
               <Link href="/admin/authors" className="hover:underline">Staff</Link>
             </>
           ) : null}
-          <form action={signOut}>
-            <button className="border border-ink px-3 py-1">Sign out</button>
-          </form>
         </nav>
       </div>
     </div>

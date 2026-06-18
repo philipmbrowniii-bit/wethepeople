@@ -1,16 +1,24 @@
 import { saveAboutContent } from "@/lib/actions";
 import { requireAdmin } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { AdminPageHeader } from "@/components/admin-page-header";
+import { AdminSaveNotice } from "@/components/admin-save-notice";
 import type { SiteSettings } from "@/lib/types";
 
-export default async function AdminAboutPage() {
+export default async function AdminAboutPage({ searchParams }: { searchParams: Promise<{ saved?: string }> }) {
+  const params = await searchParams;
   await requireAdmin();
   const admin = createAdminClient();
   const { data: settings } = await admin.from("site_settings").select("*").eq("id", "main").single<SiteSettings>();
   if (!settings) throw new Error("Site settings are not initialized.");
   return (
     <section>
-      <h1 className="font-serif text-4xl font-bold">About &amp; Editorial Content</h1>
+      <AdminSaveNotice saved={params.saved === "1"} />
+      <AdminPageHeader
+        eyebrow="Publication"
+        title="About & Editorial Content"
+        description="Edit the publication mission, history, standards, and contact information shown on the public website."
+      />
       <form action={saveAboutContent} className="mt-6 space-y-5">
         <label className="block"><span className="text-sm font-bold uppercase">Mission statement</span><textarea name="about_mission" rows={5} defaultValue={settings.about_mission} className="mt-2 w-full border border-rule px-3 py-2" /></label>
         <label className="block"><span className="text-sm font-bold uppercase">Publication history</span><textarea name="about_history" rows={5} defaultValue={settings.about_history} className="mt-2 w-full border border-rule px-3 py-2" /></label>

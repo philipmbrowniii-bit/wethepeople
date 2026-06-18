@@ -1,4 +1,5 @@
 import { ArticleForm } from "@/components/article-form";
+import { AdminPageHeader } from "@/components/admin-page-header";
 import { requireWriter } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Category, Profile } from "@/lib/types";
@@ -13,8 +14,14 @@ export default async function NewArticlePage() {
 
   return (
     <section>
-      <h1 className="mb-6 font-serif text-4xl font-bold">New article</h1>
+      <AdminPageHeader
+        eyebrow="Article editor"
+        title="Create a New Article"
+        description="Write the story, assign its author and section, upload an image, then save it as a draft or publish it directly."
+      />
+      <div className="mt-6">
       <ArticleForm categories={categories ?? []} authors={authors ?? []} currentAuthorId={profile.id} />
+      </div>
     </section>
   );
 }

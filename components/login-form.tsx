@@ -6,7 +6,7 @@ import { signIn } from "@/lib/actions";
 function LoginButton() {
   const { pending } = useFormStatus();
   return (
-    <button disabled={pending} className="border border-ink px-4 py-2 text-sm uppercase tracking-wide disabled:opacity-50">
+    <button disabled={pending} className="w-full border border-ink bg-ink px-4 py-3 text-sm font-bold uppercase text-white disabled:opacity-50">
       {pending ? "Signing in..." : "Sign in"}
     </button>
   );

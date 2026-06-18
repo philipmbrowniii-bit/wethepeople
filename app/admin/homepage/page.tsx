@@ -1,9 +1,12 @@
 import { saveHomepage } from "@/lib/actions";
 import { requireAdmin } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { AdminPageHeader } from "@/components/admin-page-header";
+import { AdminSaveNotice } from "@/components/admin-save-notice";
 import type { Article, SiteSettings } from "@/lib/types";
 
-export default async function AdminHomepagePage() {
+export default async function AdminHomepagePage({ searchParams }: { searchParams: Promise<{ saved?: string }> }) {
+  const params = await searchParams;
   await requireAdmin();
   const admin = createAdminClient();
   const [{ data: settings }, { data: articles }] = await Promise.all([
@@ -15,7 +18,12 @@ export default async function AdminHomepagePage() {
 
   return (
     <section>
-      <h1 className="font-serif text-4xl font-bold">Homepage Content</h1>
+      <AdminSaveNotice saved={params.saved === "1"} />
+      <AdminPageHeader
+        eyebrow="Front page"
+        title="Homepage Content"
+        description="Choose the lead story, edit the homepage message, and control which editorial sections appear and in what order."
+      />
       <form action={saveHomepage} className="mt-6 space-y-6">
         <label className="block">
           <span className="text-sm font-bold uppercase">Hero headline</span>

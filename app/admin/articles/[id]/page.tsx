@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ArticleForm } from "@/components/article-form";
+import { AdminPageHeader } from "@/components/admin-page-header";
 import { requireWriter } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Article, Category, Profile } from "@/lib/types";
@@ -18,8 +19,14 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
 
   return (
     <section>
-      <h1 className="mb-6 font-serif text-4xl font-bold">Edit article</h1>
-      <ArticleForm article={article} categories={categories ?? []} authors={authors ?? []} currentAuthorId={profile.id} />
+      <AdminPageHeader
+        eyebrow="Article editor"
+        title="Edit Article"
+        description="Update the story text, image, author, section, tags, date, and publication status."
+      />
+      <div className="mt-6">
+        <ArticleForm article={article} categories={categories ?? []} authors={authors ?? []} currentAuthorId={profile.id} />
+      </div>
     </section>
   );
 }

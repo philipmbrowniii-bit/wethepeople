@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <>
       <AdminNav role={profile.role} />
-      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+      <main className="mx-auto min-h-[70vh] max-w-7xl px-4 py-8">{children}</main>
     </>
   );
 }
