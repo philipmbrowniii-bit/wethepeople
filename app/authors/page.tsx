@@ -35,7 +35,9 @@ export default async function AuthorsPage() {
                 .eq("status", "published")
                 .order("published_at", { ascending: false })
                 .returns<ArticleWithRelations[]>();
-              const title = author.display_name === "Philip Brown" ? "Co-Founder & Editor" : "Editorial Contributor";
+              const title = ["Philip Brown", "Charles Oblinger"].includes(author.display_name)
+                ? "Co-Founder & Editor"
+                : "Editorial Contributor";
 
               return (
                 <section key={author.id} className="grid gap-6 py-9 md:grid-cols-[220px_1fr]">

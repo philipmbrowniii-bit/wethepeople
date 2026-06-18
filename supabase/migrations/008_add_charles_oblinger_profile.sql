@@ -1,10 +1,4 @@
 update public.profiles
-set display_name = 'Philip Brown',
-    bio = 'Philip Brown is the founder of The People''s Ledger, an independent publication dedicated to transparency, civic engagement, and public accountability. His work focuses on policy, governance, institutional effectiveness, and the issues shaping American communities.',
-    updated_at = now()
-where id = '11111111-1111-1111-1111-111111111111';
-
-update public.profiles
 set display_name = 'Charles Oblinger',
     bio = 'Charles Oblinger is a co-founder of The People''s Ledger, an independent publication dedicated to transparency, civic engagement, and public accountability. His work focuses on civic institutions, public discourse, community affairs, and the issues shaping American life.',
     updated_at = now()
