@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { getCategories } from "@/lib/data";
+import { getCategories, getSiteSettings } from "@/lib/data";
 import { formatDate } from "@/lib/format";
 
 export async function SiteHeader() {
-  const categories = await getCategories();
+  const [categories, settings] = await Promise.all([getCategories(), getSiteSettings()]);
+  const siteName = settings?.site_name ?? "The People's Ledger";
+  const tagline = settings?.tagline ?? "News for Citizens, Not Consumers.";
 
   return (
     <header className="border-b border-ink bg-paper">
@@ -21,9 +23,12 @@ export async function SiteHeader() {
         </div>
         <div className="py-6 text-center sm:py-8">
           <Link href="/" className="inline-block font-serif text-5xl font-bold text-ink sm:text-7xl">
-            The People&apos;s Ledger
+            {settings?.logo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={settings.logo_url} alt={siteName} className="mx-auto max-h-24 max-w-full" />
+            ) : siteName}
           </Link>
-          <p className="mt-2 text-sm uppercase text-muted sm:text-base">News for Citizens, Not Consumers.</p>
+          <p className="mt-2 text-sm uppercase text-muted sm:text-base">{tagline}</p>
         </div>
         <nav className="flex gap-5 overflow-x-auto border-t border-ink py-3 text-xs font-bold uppercase sm:justify-center sm:text-sm">
           <Link href="/" className="shrink-0 hover:text-gold-dark">

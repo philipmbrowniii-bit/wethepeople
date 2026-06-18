@@ -1,32 +1,18 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
+import { MarkdownBody } from "@/components/markdown-body";
 import { SiteHeader } from "@/components/site-header";
+import { getSiteSettings } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Editorial Standards",
   description: "The editorial principles guiding The People's Ledger."
 };
 
-const standards = [
-  {
-    title: "Independence",
-    body: "Editorial decisions are made in service of readers and the public interest. Coverage, analysis, and conclusions are not dictated by advertisers, political parties, public officials, or outside institutions."
-  },
-  {
-    title: "Fact-based reporting",
-    body: "Reporting should rely on verifiable information, primary documents, direct observation, and clearly attributed sources. Material uncertainty is stated plainly, and factual errors are corrected transparently."
-  },
-  {
-    title: "Clearly labeled opinion",
-    body: "Opinion, commentary, and editorial analysis are labeled so readers can distinguish argument from straight reporting. Opinion writers remain responsible for factual accuracy and honest representation of opposing views."
-  },
-  {
-    title: "Commitment to transparency",
-    body: "We explain relevant sourcing, disclose meaningful conflicts, link to public records when practical, and tell readers what is known, what is inferred, and what remains unresolved."
-  }
-];
+export const dynamic = "force-dynamic";
 
-export default function EditorialStandardsPage() {
+export default async function EditorialStandardsPage() {
+  const settings = await getSiteSettings();
   return (
     <>
       <SiteHeader />
@@ -38,16 +24,8 @@ export default function EditorialStandardsPage() {
             Trust is earned through discipline, clarity, and accountability to the public record.
           </p>
         </header>
-        <div className="divide-y divide-rule">
-          {standards.map((standard, index) => (
-            <section key={standard.title} className="grid gap-4 py-8 sm:grid-cols-[70px_1fr]">
-              <span className="font-serif text-3xl text-gold-dark">0{index + 1}</span>
-              <div>
-                <h2 className="font-serif text-3xl font-bold">{standard.title}</h2>
-                <p className="mt-3 text-lg leading-8 text-muted">{standard.body}</p>
-              </div>
-            </section>
-          ))}
+        <div className="py-8">
+          <MarkdownBody body={settings?.editorial_standards ?? ""} />
         </div>
       </main>
       <Footer />

@@ -8,6 +8,32 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { ArticleFormState, ArticleStatus, CommentStatus } from "@/lib/types";
 
+async function uploadImage(file: FormDataEntryValue | null, folder: string) {
+  if (!(file instanceof File) || file.size === 0) return null;
+  if (!file.type.startsWith("image/")) throw new Error("Only image uploads are supported.");
+  if (file.size > 5 * 1024 * 1024) throw new Error("Images must be smaller than 5 MB.");
+
+  const admin = createAdminClient();
+  const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const path = `${folder}/${crypto.randomUUID()}.${extension}`;
+  const { error } = await admin.storage.from("publication-assets").upload(path, file, {
+    contentType: file.type,
+    upsert: false
+  });
+  if (error) throw error;
+  return admin.storage.from("publication-assets").getPublicUrl(path).data.publicUrl;
+}
+
+function socialLinks(formData: FormData, prefix = "") {
+  return {
+    website: String(formData.get(`${prefix}website`) ?? "").trim(),
+    x: String(formData.get(`${prefix}x`) ?? "").trim(),
+    facebook: String(formData.get(`${prefix}facebook`) ?? "").trim(),
+    instagram: String(formData.get(`${prefix}instagram`) ?? "").trim(),
+    linkedin: String(formData.get(`${prefix}linkedin`) ?? "").trim()
+  };
+}
+
 export async function submitComment(_: ArticleFormState, formData: FormData): Promise<ArticleFormState> {
   const articleId = String(formData.get("article_id") ?? "");
   const name = String(formData.get("name") ?? "").trim();
@@ -58,10 +84,18 @@ export async function saveArticle(_: ArticleFormState, formData: FormData): Prom
   const title = String(formData.get("title") ?? "").trim();
   const body = String(formData.get("body") ?? "").trim();
   const status = String(formData.get("status") ?? "draft") as ArticleStatus;
-  const publishedAt = status === "published" ? new Date().toISOString() : null;
+  const publicationDate = String(formData.get("published_at") ?? "");
+  const publishedAt = status === "published" ? (publicationDate ? new Date(publicationDate).toISOString() : new Date().toISOString()) : null;
 
   if (!title || !body) {
     return { ok: false, message: "Title and article body are required." };
+  }
+
+  let featuredImageUrl = String(formData.get("featured_image_url") ?? "").trim() || null;
+  try {
+    featuredImageUrl = (await uploadImage(formData.get("featured_image"), "articles")) ?? featuredImageUrl;
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : "Unable to upload image." };
   }
 
   const payload = {
@@ -76,7 +110,13 @@ export async function saveArticle(_: ArticleFormState, formData: FormData): Prom
     is_featured: formData.get("is_featured") === "on",
     published_at: publishedAt,
     reading_time: estimateReadingTime(body),
-    op_ed_label: "Opinion / Op-Ed"
+    op_ed_label: String(formData.get("op_ed_label") ?? "Opinion / Op-Ed"),
+    featured_image_url: featuredImageUrl,
+    tags: String(formData.get("tags") ?? "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean),
+    archived_at: formData.get("is_archived") === "on" ? new Date().toISOString() : null
   };
 
   const { error, data } = id
@@ -93,10 +133,20 @@ export async function saveArticle(_: ArticleFormState, formData: FormData): Prom
 }
 
 export async function deleteArticle(formData: FormData) {
-  await requireWriter();
+  await requireAdmin();
   const id = String(formData.get("id") ?? "");
   const admin = createAdminClient();
   await admin.from("articles").delete().eq("id", id);
+  revalidatePath("/");
+  revalidatePath("/admin");
+}
+
+export async function archiveArticle(formData: FormData) {
+  await requireWriter();
+  const id = String(formData.get("id") ?? "");
+  const shouldRestore = formData.get("restore") === "true";
+  const admin = createAdminClient();
+  await admin.from("articles").update({ archived_at: shouldRestore ? null : new Date().toISOString() }).eq("id", id);
   revalidatePath("/");
   revalidatePath("/admin");
 }
@@ -142,9 +192,77 @@ export async function saveProfile(formData: FormData) {
   const display_name = String(formData.get("display_name") ?? "").trim();
   const bio = String(formData.get("bio") ?? "").trim() || null;
   const role = String(formData.get("role") ?? "writer");
-  const avatar_url = String(formData.get("avatar_url") ?? "").trim() || null;
+  let avatar_url = String(formData.get("avatar_url") ?? "").trim() || null;
+  avatar_url = (await uploadImage(formData.get("avatar"), "profiles")) ?? avatar_url;
+  const title = String(formData.get("title") ?? "").trim() || null;
+  const author_page_url = String(formData.get("author_page_url") ?? "").trim() || null;
 
-  await admin.from("profiles").update({ display_name, bio, role, avatar_url }).eq("id", id);
+  await admin
+    .from("profiles")
+    .update({ display_name, bio, role, avatar_url, title, author_page_url, social_links: socialLinks(formData) })
+    .eq("id", id);
   revalidatePath("/admin/authors");
   revalidatePath("/authors");
+  revalidatePath("/");
+}
+
+export async function saveBranding(formData: FormData) {
+  await requireAdmin();
+  const admin = createAdminClient();
+  let logo_url = String(formData.get("logo_url") ?? "").trim() || null;
+  let favicon_url = String(formData.get("favicon_url") ?? "").trim() || null;
+  logo_url = (await uploadImage(formData.get("logo"), "branding")) ?? logo_url;
+  favicon_url = (await uploadImage(formData.get("favicon"), "branding")) ?? favicon_url;
+
+  await admin
+    .from("site_settings")
+    .update({
+      site_name: String(formData.get("site_name") ?? "").trim(),
+      tagline: String(formData.get("tagline") ?? "").trim(),
+      footer_text: String(formData.get("footer_text") ?? "").trim(),
+      logo_url,
+      favicon_url,
+      social_links: socialLinks(formData)
+    })
+    .eq("id", "main");
+  revalidatePath("/", "layout");
+}
+
+export async function saveHomepage(formData: FormData) {
+  await requireAdmin();
+  const admin = createAdminClient();
+  const keys = ["latest", "opinion", "most_read"] as const;
+  const homepage_sections = keys.map((key) => ({
+    key,
+    title: String(formData.get(`${key}_title`) ?? "").trim(),
+    enabled: formData.get(`${key}_enabled`) === "on",
+    position: Number(formData.get(`${key}_position`) ?? 1)
+  }));
+
+  await admin
+    .from("site_settings")
+    .update({
+      hero_headline: String(formData.get("hero_headline") ?? "").trim(),
+      tagline: String(formData.get("tagline") ?? "").trim(),
+      featured_article_id: String(formData.get("featured_article_id") ?? "") || null,
+      homepage_sections
+    })
+    .eq("id", "main");
+  revalidatePath("/");
+}
+
+export async function saveAboutContent(formData: FormData) {
+  await requireAdmin();
+  const admin = createAdminClient();
+  await admin
+    .from("site_settings")
+    .update({
+      about_mission: String(formData.get("about_mission") ?? "").trim(),
+      about_history: String(formData.get("about_history") ?? "").trim(),
+      editorial_standards: String(formData.get("editorial_standards") ?? "").trim(),
+      contact_information: String(formData.get("contact_information") ?? "").trim()
+    })
+    .eq("id", "main");
+  revalidatePath("/about");
+  revalidatePath("/editorial-standards");
 }

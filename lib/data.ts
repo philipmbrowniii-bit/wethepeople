@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { ArticleWithRelations, Category, Comment, Profile } from "@/lib/types";
+import type { ArticleWithRelations, Category, Comment, Profile, SiteSettings } from "@/lib/types";
 
 const articleSelect = "*, categories(*), profiles(*)";
 
@@ -15,6 +15,7 @@ export async function getPublishedArticles(limit?: number) {
     .from("articles")
     .select(articleSelect)
     .eq("status", "published")
+    .is("archived_at", null)
     .order("published_at", { ascending: false });
 
   if (limit) query = query.limit(limit);
@@ -29,6 +30,7 @@ export async function getFeaturedArticle() {
     .from("articles")
     .select(articleSelect)
     .eq("status", "published")
+    .is("archived_at", null)
     .eq("is_featured", true)
     .order("published_at", { ascending: false })
     .limit(1)
@@ -43,6 +45,7 @@ export async function getArticleBySlug(slug: string) {
     .select(articleSelect)
     .eq("slug", slug)
     .eq("status", "published")
+    .is("archived_at", null)
     .maybeSingle<ArticleWithRelations>();
   return data;
 }
@@ -56,6 +59,7 @@ export async function getArticlesByCategory(slug: string) {
     .from("articles")
     .select(articleSelect)
     .eq("status", "published")
+    .is("archived_at", null)
     .eq("category_id", category.id)
     .order("published_at", { ascending: false })
     .returns<ArticleWithRelations[]>();
@@ -84,4 +88,10 @@ export async function getAuthors() {
     .order("display_name")
     .returns<Profile[]>();
   return data ?? [];
+}
+
+export async function getSiteSettings() {
+  const supabase = await createClient();
+  const { data } = await supabase.from("site_settings").select("*").eq("id", "main").maybeSingle<SiteSettings>();
+  return data;
 }

@@ -35,15 +35,16 @@ export default async function AuthorsPage() {
                 .eq("status", "published")
                 .order("published_at", { ascending: false })
                 .returns<ArticleWithRelations[]>();
-              const title = ["Philip Brown", "Charles Oblinger"].includes(author.display_name)
-                ? "Co-Founder & Editor"
-                : "Editorial Contributor";
+              const title = author.title ?? "Editorial Contributor";
 
               return (
                 <section key={author.id} className="grid gap-6 py-9 md:grid-cols-[220px_1fr]">
                   <div>
-                    <div className="flex aspect-square max-w-[180px] items-center justify-center border border-rule bg-white font-serif text-5xl text-gold-dark">
-                      {author.display_name
+                    <div className="flex aspect-square max-w-[180px] items-center justify-center overflow-hidden border border-rule bg-white font-serif text-5xl text-gold-dark">
+                      {author.avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={author.avatar_url} alt={author.display_name} className="h-full w-full object-cover" />
+                      ) : author.display_name
                         .split(" ")
                         .map((part) => part[0])
                         .join("")
@@ -54,6 +55,18 @@ export default async function AuthorsPage() {
                   <div>
                     <h2 className="font-serif text-4xl font-bold">{author.display_name}</h2>
                     <p className="mt-4 max-w-3xl text-lg leading-8 text-muted">{author.bio}</p>
+                    {Object.entries(author.social_links ?? {}).some(([, url]) => Boolean(url)) ? (
+                      <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                        {Object.entries(author.social_links ?? {}).filter(([, url]) => Boolean(url)).map(([network, url]) => (
+                          <a key={network} href={url} target="_blank" rel="noreferrer" className="capitalize text-gold-dark hover:underline">{network}</a>
+                        ))}
+                      </div>
+                    ) : null}
+                    {author.author_page_url ? (
+                      <a href={author.author_page_url} className="mt-4 inline-block text-sm font-bold text-gold-dark hover:underline">
+                        Author page
+                      </a>
+                    ) : null}
                     {(data ?? []).length ? (
                       <div className="mt-7">
                         <h3 className="border-b border-ink pb-2 text-xs font-bold uppercase">Recent work</h3>

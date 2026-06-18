@@ -87,9 +87,74 @@ export function ArticleForm({ article, categories, authors, currentAuthorId }: P
           </select>
         </div>
       </div>
+      <div>
+        <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="published_at">
+          Publication date
+        </label>
+        <input
+          id="published_at"
+          name="published_at"
+          type="datetime-local"
+          defaultValue={article?.published_at?.slice(0, 16) ?? ""}
+          className="mt-2 w-full border border-rule px-3 py-2 sm:max-w-sm"
+        />
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="op_ed_label">
+            Content label
+          </label>
+          <select
+            id="op_ed_label"
+            name="op_ed_label"
+            defaultValue={article?.op_ed_label ?? "Opinion / Op-Ed"}
+            className="mt-2 w-full border border-rule px-3 py-2"
+          >
+            <option>News</option>
+            <option>News Analysis</option>
+            <option>Opinion / Op-Ed</option>
+            <option>Editorial</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="tags">
+            Tags
+          </label>
+          <input
+            id="tags"
+            name="tags"
+            defaultValue={article?.tags?.join(", ") ?? ""}
+            placeholder="transparency, local government"
+            className="mt-2 w-full border border-rule px-3 py-2"
+          />
+        </div>
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="featured_image_url">
+            Featured image URL
+          </label>
+          <input
+            id="featured_image_url"
+            name="featured_image_url"
+            defaultValue={article?.featured_image_url ?? ""}
+            className="mt-2 w-full border border-rule px-3 py-2"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="featured_image">
+            Upload featured image
+          </label>
+          <input id="featured_image" name="featured_image" type="file" accept="image/*" className="mt-2 w-full border border-rule px-3 py-2" />
+        </div>
+      </div>
       <label className="flex items-center gap-2 text-sm uppercase tracking-wide">
         <input type="checkbox" name="is_featured" defaultChecked={article?.is_featured} />
         Featured article
+      </label>
+      <label className="flex items-center gap-2 text-sm uppercase tracking-wide">
+        <input type="checkbox" name="is_archived" defaultChecked={Boolean(article?.archived_at)} />
+        Archived
       </label>
       <div>
         <label className="block text-sm font-bold uppercase tracking-wide" htmlFor="body">

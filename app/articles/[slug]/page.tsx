@@ -36,7 +36,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <p className="mt-1">{article.reading_time} min read</p>
             </aside>
             <div>
+              {article.featured_image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={article.featured_image_url} alt="" className="mb-8 aspect-[16/9] w-full object-cover" />
+              ) : null}
               <MarkdownBody body={article.body} />
+              {article.tags?.length ? (
+                <div className="mt-8 flex flex-wrap gap-2 border-t border-rule pt-5">
+                  {article.tags.map((tag) => <span key={tag} className="border border-rule px-2 py-1 text-xs uppercase text-muted">{tag}</span>)}
+                </div>
+              ) : null}
             </div>
           </div>
         </article>

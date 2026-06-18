@@ -7,16 +7,24 @@ The People's Ledger is an independent civic journalism and opinion publication f
 ## Features
 
 - Newspaper-inspired public homepage
+- Database-backed homepage, About, editorial standards, branding, footer, and staff content
 - Published op-ed article pages with author boxes
 - Category and author pages
 - Moderated public comments
 - Supabase-protected admin dashboard
-- Article create, edit, publish, unpublish, feature, and delete controls
+- Article create, edit, publish, unpublish, archive, feature, image, tag, author, and date controls
 - Category management
 - Comment approval, rejection, and deletion
-- Author bio editing
+- Founder, staff, contributor, social-link, and profile-photo editing
+- Supabase Storage uploads for publication images
 - Markdown article editor
 - Row Level Security policies for public and admin access
+
+## CMS permissions
+
+- Admins manage branding, homepage content, About content, editorial standards, staff profiles, categories, comments, and all article operations.
+- Writers can create, edit, publish, unpublish, feature, and archive articles.
+- Permanent article deletion remains admin-only.
 
 ## Local setup
 
